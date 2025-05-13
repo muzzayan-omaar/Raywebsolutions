@@ -9,6 +9,7 @@ import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
 import WhatsAppFloatingButton from "./components/WhatsAppEmailFloatingButtons";
 import Contact from "./pages/Contact";
+import Pricing from "./pages/Pricing";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             }
           />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/pricing" element={<Pricing />} />
         </Routes>
         <Footer />
         <WhatsAppFloatingButton />

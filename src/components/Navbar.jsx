@@ -1,6 +1,6 @@
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom"; // ✅ Don't forget this import!
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,11 @@ const Navbar = () => {
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6 text-sm font-medium">
           <li><a href="#about" className="hover:text-primary transition">About</a></li>
-          <li><a href="#services" className="hover:text-primary transition">Services</a></li>
+          <li>
+            <Link to="/pricing" className="hover:text-primary transition">
+              Pricing
+            </Link>
+          </li>
           <li><a href="#projects" className="hover:text-primary transition">Projects</a></li>
           <li>
             <Link to="/contact" className="hover:text-primary transition">
@@ -27,7 +31,10 @@ const Navbar = () => {
         </ul>
 
         {/* CTA */}
-        <Link to="/contact" className="hidden md:inline-block bg-primary text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-sky-400 transition">
+        <Link
+          to="/contact"
+          className="hidden md:inline-block bg-primary text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-sky-400 transition"
+        >
           Get In Touch
         </Link>
 
@@ -41,10 +48,15 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden mt-2 bg-white/5 backdrop-blur-lg border border-white/10 shadow-md rounded-xl text-white text-sm font-medium p-4 space-y-2">
           <a href="#about" className="block hover:text-primary">About</a>
-          <a href="#services" className="block hover:text-primary">Services</a>
+          <Link to="/pricing" className="block hover:text-primary">Pricing</Link>
           <a href="#projects" className="block hover:text-primary">Projects</a>
           <Link to="/contact" className="block hover:text-primary">Contact</Link>
-          <Link to="/contact" className="block mt-2 bg-primary text-black px-4 py-2 rounded-full text-center">Get In Touch</Link>
+          <Link
+            to="/contact"
+            className="block mt-2 bg-primary text-black px-4 py-2 rounded-full text-center"
+          >
+            Get In Touch
+          </Link>
         </div>
       )}
     </header>
