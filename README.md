@@ -1,12 +1,39 @@
-# React + Vite
+# RayWebSolutions 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**RayWebSolutions** is a modern portfolio site built with React, Vite, and Tailwind CSS — designed to showcase and sell high-quality digital services including landing pages, full websites, UI/UX designs, SEO, and eCommerce solutions.
 
-Currently, two official plugins are available:
+This site features:
+- 💼 Dynamic project and blog management
+- 💳 Pricing packages with comparisons and FAQs
+- 🛒 Custom and Shopify eCommerce integration
+- 🧑‍💼 Admin dashboard to manage content
+- 🌐 Fast, responsive, and SEO-optimized layouts
+- 🎯 Built for freelancers and agencies targeting the UAE and beyond
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **React + Vite** – Lightning fast frontend setup
+- **Tailwind CSS** – Utility-first modern styling
+- **Framer Motion** – Smooth animations
+- **Cloudinary** – Image hosting
+- **MongoDB + Express** – Backend with dynamic data
+- **Stripe** – Payments (planned)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Setup Instructions
+
+1. Clone the repo  
+   `git clone https://github.com/yourusername/raywebsolutions.git`
+
+2. Install dependencies  
+   `npm install`
+
+3. Start the development server  
+   `npm run dev`
+
+## License
+
+This project is open-source and free to use under the MIT License.
+
+---
+
+Let the world see your web magic 💻✨
