@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -50,8 +50,8 @@ const Hero = () => {
           href="#contact" 
           className="inline-flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-full text-sm font-semibold hover:bg-sky-400 transition"
         >
-          Get a Free Strategy Call
-          <ArrowDown size={16} />
+          Get Started!
+          <ArrowRight size={16} />
         </a>
       </motion.div>
 

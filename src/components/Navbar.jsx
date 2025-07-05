@@ -16,7 +16,7 @@ const Navbar = () => {
 
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6 text-sm font-medium">
-          <li><a href="#about" className="hover:text-primary transition">About</a></li>
+          <li><a href="/" className="hover:text-primary transition">Home</a></li>
           <li>
             <Link to="/pricing" className="hover:text-primary transition">
               Pricing

@@ -15,8 +15,8 @@ const Footer = () => {
         {/* Navigation & Socials */}
         <div className="flex flex-col md:items-end gap-4">
           <div className="flex gap-6 text-lg">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaInstagram /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaLinkedin /></a>
+            <a href="https://instagram.com/muzzayanomaar/" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaInstagram /></a>
+            <a href="https://www.linkedin.com/in/muzzayan-omaar/" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaLinkedin /></a>
             <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaBehance /></a>
           </div>
           <a href="#top" className="text-sm text-blue-400 hover:text-white transition">Back to Top ↑</a>
