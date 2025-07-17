@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+
+
 
 const packages = [
   {
@@ -128,9 +131,12 @@ const Pricing = () => {
               )}
             </div>
 
-            <button className="w-full mt-6 bg-primary text-black py-2 rounded-full font-semibold hover:bg-sky-400 transition">
-              Choose Plan
-            </button>
+            <Link
+              to={`/templates/${pkg.title.toLowerCase()}`}
+              className="w-full inline-block mt-6 bg-primary text-black py-2 rounded-full text-center font-semibold hover:bg-sky-400 transition"
+            >
+              View Templates
+            </Link>
           </motion.div>
         ))}
 

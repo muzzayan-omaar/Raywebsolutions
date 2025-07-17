@@ -10,6 +10,8 @@ import Footer from "./components/Footer";
 import WhatsAppFloatingButton from "./components/WhatsAppEmailFloatingButtons";
 import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
+import Templates from "./pages/Templates";
+import RegisterProject from "./pages/RegisterProject";
 
 function App() {
   return (
@@ -30,6 +32,9 @@ function App() {
           />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/templates/:plan" element={<Templates />} />
+          <Route path="/register-project" element={<RegisterProject />} />
+
         </Routes>
         <Footer />
         <WhatsAppFloatingButton />
