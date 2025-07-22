@@ -1,36 +1,39 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import templates from "../data/templatesData";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import TemplateSelectionModal from "../components/TemplateSelectionModal";
 
 const Templates = () => {
   const { plan } = useParams();
-  const navigate = useNavigate();
   const isFilterable = plan === "starter" || plan === "professional";
 
+  // Filter templates for the current plan
   const templatesForPlan = templates.filter(
-    (tpl) => tpl.category === plan.toLowerCase()
+    (tpl) => tpl.category.toLowerCase() === plan.toLowerCase()
   );
 
+  // Extract unique subcategories
   const categories = Array.from(
-    new Set(templatesForPlan.map((tpl) => tpl.subCategory))
+    new Set(templatesForPlan.map((tpl) => tpl.subCategory || "Other"))
   ).sort();
 
   const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const filteredTemplates =
     activeCategory === "all"
       ? templatesForPlan
-      : templatesForPlan.filter((tpl) => tpl.subCategory === activeCategory);
+      : templatesForPlan.filter(
+          (tpl) => (tpl.subCategory || "Other") === activeCategory
+        );
 
   const handleSelect = (template) => {
-    navigate("/register-project", {
-      state: {
-        plan,
-        templateTitle: template.title,
-        demoUrl: template.demoUrl,
-      },
-    });
+    setSelectedTemplate(template);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedTemplate(null);
   };
 
   return (
@@ -70,6 +73,7 @@ const Templates = () => {
           </div>
         )}
 
+        {/* Template Cards */}
         {filteredTemplates.length === 0 ? (
           <p>No templates available for this plan yet.</p>
         ) : (
@@ -109,6 +113,16 @@ const Templates = () => {
           </div>
         )}
       </div>
+
+      {/* Template Selection Modal */}
+      {selectedTemplate && (
+        <TemplateSelectionModal
+          isOpen={!!selectedTemplate}
+          template={selectedTemplate}
+          plan={plan}
+          onClose={handleCloseModal}
+        />
+      )}
     </section>
   );
 };

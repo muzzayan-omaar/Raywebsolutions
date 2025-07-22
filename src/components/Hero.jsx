@@ -47,7 +47,7 @@ const Hero = () => {
         className="mt-8"
       >
         <a 
-          href="#contact" 
+          href="/pricing" 
           className="inline-flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-full text-sm font-semibold hover:bg-sky-400 transition"
         >
           Get Started!
