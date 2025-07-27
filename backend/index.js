@@ -5,12 +5,14 @@ const mongoose = require("mongoose");
 
 dotenv.config();
 
+
+
+const app = express();
 app.use(
   "/api/payment/webhook",
   require("./routes/webhook") // register webhook route
 );
 
-const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
