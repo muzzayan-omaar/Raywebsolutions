@@ -1,0 +1,11 @@
+# Ignore all .env files in frontend and backend
+**/.env
+
+# Ignore node_modules folders
+**/node_modules
+
+# Optional: ignore Vite build output
+frontend/dist
+
+# Optional: ignore logs
+*.log
