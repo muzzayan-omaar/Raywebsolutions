@@ -5,15 +5,21 @@ const mongoose = require("mongoose");
 
 dotenv.config();
 
-
-
 const app = express();
+
+// ✅ Setup CORS to allow Vercel and localhost during development
 app.use(
-  "/api/payment/webhook",
-  require("./routes/webhook") // register webhook route
+  cors({
+    origin: ["https://raywebsolutions.vercel.app", "http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
 );
 
-app.use(cors());
+// ✅ Stripe webhook route (must be before express.json to handle raw body if needed)
+app.use("/api/payment/webhook", require("./routes/webhook"));
+
+// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
