@@ -46,9 +46,9 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
     try {
       const stripe = await stripePromise;
 
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/payment/checkout`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payment/checkout`, {
         name: template.title,
-        amount: plan === "Premium" ? 100 : 50, // or however you price
+        amount: plan === "Premium" ? 100 : 50,
         customer: formData,
         templateId: template.id,
         plan,
@@ -66,7 +66,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 px-4">
       <div className="bg-[#0b1120] text-white max-w-5xl w-full rounded-xl shadow-lg flex overflow-hidden relative">
-        {/* Close Button */}
         <button
           className="absolute top-4 right-4 text-white bg-red-600 hover:bg-red-700 p-2 rounded-full z-10"
           onClick={onClose}
@@ -74,7 +73,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
           ✕
         </button>
 
-        {/* Left: Image */}
         <div className="hidden md:block w-1/2 bg-black">
           <img
             src={template.image}
@@ -83,7 +81,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
           />
         </div>
 
-        {/* Right: Steps */}
         <div className="w-full md:w-1/2 p-8">
           <AnimatePresence mode="wait">
             {step === 1 && (
@@ -118,7 +115,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                 transition={{ duration: 0.3 }}
               >
                 <h2 className="text-xl font-bold mb-4">Company Details</h2>
-
                 <div className="space-y-4">
                   <div>
                     <input
@@ -132,7 +128,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                       <p className="text-red-500 text-sm">{errors.companyName}</p>
                     )}
                   </div>
-
                   <div>
                     <input
                       name="email"
@@ -146,7 +141,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                       <p className="text-red-500 text-sm">{errors.email}</p>
                     )}
                   </div>
-
                   <div>
                     <input
                       name="phone"
@@ -160,7 +154,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                       <p className="text-red-500 text-sm">{errors.phone}</p>
                     )}
                   </div>
-
                   <div>
                     <select
                       name="industry"
