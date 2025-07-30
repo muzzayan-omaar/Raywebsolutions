@@ -13,6 +13,8 @@ import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
 import Templates from "./pages/Templates";
 import RegisterProject from "./pages/RegisterProject";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/templates/:plan" element={<Templates />} />
           <Route path="/register-project" element={<RegisterProject />} />
+                  <Route path="/success" element={<Success />} />
+        <Route path="/cancel" element={<Cancel />} />
 
         </Routes>
         <Footer />
