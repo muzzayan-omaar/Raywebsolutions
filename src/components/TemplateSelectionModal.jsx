@@ -46,7 +46,7 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
     try {
       const stripe = await stripePromise;
 
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/payment/checkout/api`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}api/payment/checkout`, {
         name: template.title,
         amount: plan === "Premium" ? 100 : 50,
         customer: formData,
