@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import emailjs from "@emailjs/browser";
-import { Toaster, toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconRetina from "leaflet/dist/images/marker-icon-2x.png";
@@ -30,24 +30,24 @@ const Contact = () => {
     setLoading(true);
 
     emailjs
-      .sendForm("email-raywebsolutions", "template_qt942y3", formRef.current, "bJ9wpm7S0nRz4CjZq")
-      .then(
-        () => {
-          toast.success("Message sent successfully!");
-          formRef.current.reset();
-        },
-        () => {
-          toast.error("Failed to send message. Please try again.");
-        }
+      .sendForm(
+        "email-raywebsolutions",
+        "template_qt942y3",
+        formRef.current,
+        "bJ9wpm7S0nRz4CjZq"
       )
+      .then(() => {
+        toast.success("✅ Message sent successfully!");
+        formRef.current.reset();
+      })
+      .catch(() => {
+        toast.error("❌ Failed to send message. Try again.");
+      })
       .finally(() => setLoading(false));
   };
 
   return (
     <section className="pt-28 pb-20 px-6 md:px-16 bg-dark text-white">
-      {/* Toast */}
-      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-start">
         {/* Contact Form */}
         <div className="space-y-6">
@@ -125,7 +125,11 @@ const Contact = () => {
           </MapContainer>
 
           <div className="text-sm text-gray-400">
-            <p>Email: <a href="mailto:raywebsolutionss@gmail.com" className="text-primary hover:underline">support@raywebsolutions.com</a></p>
+            <p>Email:{" "}
+              <a href="mailto:support@raywebsolutions.com" className="text-primary hover:underline">
+                support@raywebsolutions.com
+              </a>
+            </p>
             <p>Phone: +971 52 494 7730</p>
             <p>Areas: Abu Dhabi, Dubai, Sharjah</p>
           </div>
