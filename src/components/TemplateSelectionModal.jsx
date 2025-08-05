@@ -46,14 +46,13 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
     try {
       const stripe = await stripePromise;
 
-const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payment/checkout`, {
-
-
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/payment/checkout`, {
         name: template.title,
         amount: plan === "Premium" ? 100 : 50,
         customer: formData,
         templateId: template.id,
         plan,
+        isVerified: true, // 🛡️ Temporary — will later be handled via Firebase
       });
 
       await stripe.redirectToCheckout({ sessionId: res.data.id });
@@ -93,9 +92,7 @@ const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payment/c
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-xl font-bold mb-4">
-                  Confirm Template Selection
-                </h2>
+                <h2 className="text-xl font-bold mb-4">Confirm Template Selection</h2>
                 <p className="text-sm text-gray-300 mb-6">
                   You have selected: <strong>{template.title}</strong> under the <strong>{plan}</strong> plan.
                 </p>
@@ -165,9 +162,7 @@ const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payment/c
                     >
                       <option value="">Select Industry</option>
                       {industries.map((ind) => (
-                        <option key={ind} value={ind}>
-                          {ind}
-                        </option>
+                        <option key={ind} value={ind}>{ind}</option>
                       ))}
                     </select>
                     {errors.industry && (
