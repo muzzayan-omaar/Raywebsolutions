@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
-import { auth, RecaptchaVerifier, signInWithPhoneNumber } from "../firebase";
+import toast from "react-hot-toast";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -21,10 +21,6 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
 
   const validateStep = () => {
     const newErrors = {};
@@ -39,6 +35,7 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
 
   const handleNext = () => {
     if (validateStep()) setStep(step + 1);
+    else toast.error("Please fill all required fields.");
   };
 
   const handleChange = (e) => {
@@ -46,69 +43,25 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const setupRecaptcha = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-      size: "invisible",
-      callback: () => sendOtp(),
-    });
-  };
-
-  const sendOtp = async () => {
-    if (!formData.phone.startsWith("+")) {
-      alert("Please use international phone format. Example: +256...");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setupRecaptcha();
-      const appVerifier = window.recaptchaVerifier;
-      const result = await signInWithPhoneNumber(auth, formData.phone, appVerifier);
-      setConfirmationResult(result);
-      setOtpSent(true);
-      alert("OTP sent to your phone");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to send OTP. Check phone number.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const verifyOtp = async () => {
-    if (!otpCode) return alert("Enter OTP code");
-    try {
-      setLoading(true);
-      await confirmationResult.confirm(otpCode);
-      setIsVerified(true);
-      alert("Phone number verified ✅");
-    } catch (err) {
-      console.error(err);
-      alert("Invalid OTP. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handlePayment = async () => {
-    if (!isVerified) return alert("Verify your phone number before payment");
-
     setLoading(true);
     try {
       const stripe = await stripePromise;
+
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/payment/checkout`, {
         name: template.title,
         amount: plan === "Premium" ? 100 : 50,
         customer: formData,
         templateId: template.id,
         plan,
-        isVerified: true,
+        isVerified: true, // skip verification for now
       });
 
+      toast.success("Redirecting to payment...");
       await stripe.redirectToCheckout({ sessionId: res.data.id });
     } catch (err) {
       console.error(err);
-      alert("Failed to initiate payment. Please try again.");
+      toast.error("Failed to initiate payment.");
     } finally {
       setLoading(false);
     }
@@ -135,10 +88,16 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
         <div className="w-full md:w-1/2 p-8">
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div key="step1" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }}>
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
                 <h2 className="text-xl font-bold mb-4">Confirm Template Selection</h2>
                 <p className="text-sm text-gray-300 mb-6">
-                  You selected: <strong>{template.title}</strong> under <strong>{plan}</strong> plan.
+                  You have selected: <strong>{template.title}</strong> under the <strong>{plan}</strong> plan.
                 </p>
                 <button
                   onClick={() => setStep(2)}
@@ -150,50 +109,69 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
             )}
 
             {step === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }}>
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
                 <h2 className="text-xl font-bold mb-4">Company Details</h2>
                 <div className="space-y-4">
-                  <input
-                    name="companyName"
-                    placeholder="Company Name"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded bg-gray-800 text-white"
-                  />
-                  {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName}</p>}
-
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Email Address"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded bg-gray-800 text-white"
-                  />
-                  {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-
-                  <input
-                    name="phone"
-                    type="tel"
-                    placeholder="+256XXXXXXXXX"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded bg-gray-800 text-white"
-                  />
-                  {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
-
-                  <select
-                    name="industry"
-                    value={formData.industry}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded bg-gray-800 text-white"
-                  >
-                    <option value="">Select Industry</option>
-                    {industries.map((ind) => (
-                      <option key={ind} value={ind}>{ind}</option>
-                    ))}
-                  </select>
-                  {errors.industry && <p className="text-red-500 text-sm">{errors.industry}</p>}
+                  <div>
+                    <input
+                      name="companyName"
+                      placeholder="Company Name"
+                      value={formData.companyName}
+                      onChange={handleChange}
+                      className="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    {errors.companyName && (
+                      <p className="text-red-500 text-sm">{errors.companyName}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="Email Address"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      name="phone"
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm">{errors.phone}</p>
+                    )}
+                  </div>
+                  <div>
+                    <select
+                      name="industry"
+                      value={formData.industry}
+                      onChange={handleChange}
+                      className="w-full p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="">Select Industry</option>
+                      {industries.map((ind) => (
+                        <option key={ind} value={ind}>{ind}</option>
+                      ))}
+                    </select>
+                    {errors.industry && (
+                      <p className="text-red-500 text-sm">{errors.industry}</p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-6 flex justify-between">
@@ -205,7 +183,7 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                   </button>
                   <button
                     onClick={handleNext}
-                    className="px-5 py-2 rounded bg-sky-600 hover:bg-sky-500 text-white font-semibold"
+                    className="px-5 py-2 rounded bg-sky-600 hover:bg-sky-500 text-white font-semibold shadow"
                   >
                     Next
                   </button>
@@ -214,43 +192,24 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
             )}
 
             {step === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3 }}>
-                <h2 className="text-xl font-bold mb-4">Confirm & Verify</h2>
-                <p className="text-sm text-gray-300 mb-4">To proceed, verify your phone via OTP.</p>
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h2 className="text-xl font-bold mb-4">Schedule Confirmation</h2>
+                <p className="text-sm text-gray-300 mb-4">
+                  You’ll be redirected to our secure payment gateway to make a small deposit and confirm the start of development.
+                </p>
 
-                <div className="space-y-2 text-sm text-gray-400 mb-4">
+                <div className="space-y-2 text-sm text-gray-400">
                   <p><strong>Company:</strong> {formData.companyName}</p>
                   <p><strong>Email:</strong> {formData.email}</p>
                   <p><strong>Phone:</strong> {formData.phone}</p>
                   <p><strong>Industry:</strong> {formData.industry}</p>
                 </div>
-
-                {!otpSent && (
-                  <button
-                    onClick={sendOtp}
-                    className="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded font-semibold"
-                  >
-                    {loading ? "Sending..." : "Send OTP"}
-                  </button>
-                )}
-
-                {otpSent && !isVerified && (
-                  <div className="mt-4 space-y-2">
-                    <input
-                      type="text"
-                      placeholder="Enter OTP"
-                      value={otpCode}
-                      onChange={(e) => setOtpCode(e.target.value)}
-                      className="w-full p-2 rounded bg-gray-800 text-white"
-                    />
-                    <button
-                      onClick={verifyOtp}
-                      className="bg-green-700 hover:bg-green-600 px-4 py-2 text-white rounded font-bold"
-                    >
-                      {loading ? "Verifying..." : "Verify OTP"}
-                    </button>
-                  </div>
-                )}
 
                 <div className="mt-6 flex justify-between">
                   <button
@@ -261,14 +220,12 @@ const TemplateSelectionModal = ({ template, plan, onClose }) => {
                   </button>
                   <button
                     onClick={handlePayment}
-                    disabled={!isVerified || loading}
-                    className={`px-5 py-2 rounded ${isVerified ? "bg-green-600 hover:bg-green-500" : "bg-gray-400"} text-white font-semibold`}
+                    disabled={loading}
+                    className={`px-5 py-2 rounded bg-green-600 hover:bg-green-500 text-white font-semibold shadow ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {loading ? "Processing..." : "Proceed to Payment"}
                   </button>
                 </div>
-
-                <div id="recaptcha-container"></div>
               </motion.div>
             )}
           </AnimatePresence>

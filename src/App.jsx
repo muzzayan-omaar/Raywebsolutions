@@ -16,11 +16,26 @@ import RegisterProject from "./pages/RegisterProject";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 
+import { Toaster } from "react-hot-toast";
+
 function App() {
   return (
     <Router>
       <div className="bg-dark text-white min-h-screen">
         <Navbar />
+
+        {/* Toast notification handler */}
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: "#0b1120",
+              color: "#fff",
+              border: "1px solid #1e293b",
+            },
+          }}
+        />
+
         <Routes>
           <Route
             path="/"
@@ -38,10 +53,10 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/templates/:plan" element={<Templates />} />
           <Route path="/register-project" element={<RegisterProject />} />
-                  <Route path="/success" element={<Success />} />
-        <Route path="/cancel" element={<Cancel />} />
-
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
         </Routes>
+
         <Footer />
         <WhatsAppFloatingButton />
       </div>
