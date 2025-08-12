@@ -1,4 +1,4 @@
-import { FaInstagram, FaLinkedin, FaBehance } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaBehance, FaTwitter } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -17,7 +17,7 @@ const Footer = () => {
           <div className="flex gap-6 text-lg">
             <a href="https://instagram.com/ssekateraymond/" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaInstagram /></a>
             <a href="https://www.linkedin.com/in/muzzayan-omaar/" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaLinkedin /></a>
-            <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaBehance /></a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-white"><FaTwitter /></a>
           </div>
           <a href="#top" className="text-sm text-blue-400 hover:text-white transition">Back to Top ↑</a>
         </div>

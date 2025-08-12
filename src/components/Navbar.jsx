@@ -51,13 +51,14 @@ const Navbar = () => {
           <li><Link to="/contact" className="hover:text-primary transition">Contact</Link></li>
         </ul>
 
-        {/* CTA: Toggle newsletter */}
-        <button
-          onClick={() => setShowNewsletter(!showNewsletter)}
-          className="hidden md:inline-block bg-primary text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-sky-400 transition"
-        >
-          {showNewsletter ? "Close" : "Subscribe"}
-        </button>
+{/* CTA: Toggle newsletter */}
+<button
+  onClick={() => setShowNewsletter(!showNewsletter)}
+  className="hidden md:inline-block bg-[#0a2540] border border-[#1e4b7a] text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-[#163d66] hover:border-[#3a7bbf] transition"
+>
+  {showNewsletter ? "Close" : "Subscribe"}
+</button>
+
 
         {/* Mobile Menu Toggle */}
         <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
@@ -85,12 +86,13 @@ const Navbar = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 rounded-full bg-white/10 text-white border border-white/10 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <button
-                type="submit"
-                className="mt-3 w-full bg-primary text-black font-medium px-4 py-2 rounded-full hover:bg-sky-400 transition"
-              >
-                Subscribe
-              </button>
+<button
+  type="submit"
+  className="mt-3 w-full bg-[#0a2540] border border-[#1e4b7a] text-white font-medium px-4 py-2 rounded-full hover:bg-[#163d66] hover:border-[#3a7bbf] transition"
+>
+  Subscribe
+</button>
+
             </motion.form>
           )}
         </AnimatePresence>
