@@ -47,7 +47,7 @@ const Navbar = () => {
         <ul className="hidden md:flex space-x-6 text-sm font-medium">
           <li><a href="/" className="hover:text-primary transition">Home</a></li>
           <li><Link to="/pricing" className="hover:text-primary transition">Pricing</Link></li>
-          <li><a href="#projects" className="hover:text-primary transition">Projects</a></li>
+          <li><a href="/projects" className="hover:text-primary transition">Projects</a></li>
           <li><Link to="/contact" className="hover:text-primary transition">Contact</Link></li>
         </ul>
 
@@ -105,12 +105,12 @@ const Navbar = () => {
           <Link to="/pricing" className="block hover:text-primary">Pricing</Link>
           <a href="#projects" className="block hover:text-primary">Projects</a>
           <Link to="/contact" className="block hover:text-primary">Contact</Link>
-          <button
-            onClick={() => setShowNewsletter(!showNewsletter)}
-            className="block w-full mt-2 bg-primary text-black px-4 py-2 rounded-full text-center"
-          >
-            {showNewsletter ? "Close" : "Subscribe!"}
-          </button>
+<button
+  type="submit"
+  className="mt-3 w-full bg-[#0a2540] border border-[#1e4b7a] text-white font-medium px-4 py-2 rounded-full hover:bg-[#163d66] hover:border-[#3a7bbf] transition"
+>
+  Subscribe
+</button>
         </div>
       )}
     </header>

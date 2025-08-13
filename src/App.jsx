@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 import WhatsAppFloatingButton from "./components/WhatsAppEmailFloatingButtons";
 import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
+import Projects from "./pages/Projects";
 import Templates from "./pages/Templates";
 import RegisterProject from "./pages/RegisterProject";
 import Success from "./pages/Success";
@@ -51,6 +52,7 @@ function App() {
           />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/templates/:plan" element={<Templates />} />
           <Route path="/register-project" element={<RegisterProject />} />
           <Route path="/success" element={<Success />} />
