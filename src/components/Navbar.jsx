@@ -45,9 +45,9 @@ const Navbar = () => {
 
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6 text-sm font-medium">
-          <li><a href="/" className="hover:text-primary transition">Home</a></li>
+          <li><Link to="/" className="block hover:text-primary">Home</Link></li>
           <li><Link to="/pricing" className="hover:text-primary transition">Pricing</Link></li>
-          <li><a href="/projects" className="hover:text-primary transition">Projects</a></li>
+          <li><Link to="/projects" className="block hover:text-primary">Projects</Link></li>
           <li><Link to="/contact" className="hover:text-primary transition">Contact</Link></li>
         </ul>
 
@@ -101,9 +101,9 @@ const Navbar = () => {
       {/* Mobile Dropdown */}
       {isOpen && (
         <div className="md:hidden mt-2 bg-white/5 backdrop-blur-lg border border-white/10 shadow-md rounded-xl text-white text-sm font-medium p-4 space-y-2">
-          <a href="/" className="block hover:text-primary">Home</a>
+          <Link to="/" className="block hover:text-primary">Home</Link>
           <Link to="/pricing" className="block hover:text-primary">Pricing</Link>
-          <a href="#projects" className="block hover:text-primary">Projects</a>
+          <Link to="/projects" className="block hover:text-primary">Projects</Link>
           <Link to="/contact" className="block hover:text-primary">Contact</Link>
 <button
   type="submit"

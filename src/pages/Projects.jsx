@@ -1,99 +1,144 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { useState } from "react";
+import { FaCalendarAlt, FaExternalLinkAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-const slides = [
+const postsData = [
   {
-    title: "Web Development Expertise",
-    tagline: "Building fast and scalable web apps with React & Node.js.",
-    image: "https://unsplash.com/photos/black-flat-screen-computer-monitor-EZrVFJUysLkauto=format&fit=crop&w=1200&q=80",
+    id: 1,
+    title: "Corporate Website for Tech Firm",
+    date: "Aug 15, 2024",
+    image: "https://res.cloudinary.com/diszilwhc/image/upload/v1752783111/3562984_risfzw.jpg",
+    description:
+      "We built a sleek, modern website for a corporate tech firm focusing on performance, SEO, and security.",
+    link: "https://example.com",
+    extra: "Achievements: Improved traffic by 60%, integrated payment system.",
   },
   {
-    title: "Modern UI/UX Design",
-    tagline: "Creating clean, user-friendly interfaces and experiences.",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
+    id: 2,
+    title: "Mobile App for Logistics Startup",
+    date: "Sep 02, 2024",
+    image: "https://res.cloudinary.com/diszilwhc/image/upload/v1752783145/5078803_r8ntve.jpg",
+    description:
+      "Developed a cross-platform logistics tracking app with real-time GPS, push notifications, and payment integration.",
+    link: "https://instagram.com/example",
+    extra: "Achievements: Reduced delivery times by 40%.",
   },
   {
-    title: "Surveillance & Networking",
-    tagline: "Integrated security and network solutions for homes and businesses.",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80",
+    id: 3,
+    title: "CCTV Systems Installation",
+    date: "Oct 01, 2024",
+    image: "https://res.cloudinary.com/diszilwhc/image/upload/v1752783033/3266936_uzgmnq.jpg",
+    description:
+      "Installed a fully managed CCTV system with cloud backup for a business hub in Kampala.",
+    link: "https://instagram.com/example",
+    extra: "Achievements: Increased security and reduced theft incidents by 70%.",
+  },
+  {
+    id: 4,
+    title: "E-commerce Store for Boutique",
+    date: "Nov 10, 2024",
+    image: "https://res.cloudinary.com/diszilwhc/image/upload/v1752782987/3134925_zmmnsc.jpg",
+    description:
+      "A fast and modern online boutique store with integrated payments and delivery tracking.",
+    link: "https://example.com",
+    extra: "Achievements: Boosted sales by 45% in 2 months.",
+  },
+  {
+    id: 5,
+    title: "Networking Solutions Setup",
+    date: "Dec 01, 2024",
+    image: "https://res.cloudinary.com/diszilwhc/image/upload/v1752783070/3175710_r4wvyn.jpg",
+    description:
+      "Set up high-performance WiFi and LAN networking for a school with 200+ students.",
+    link: "https://instagram.com/example",
+    extra: "Achievements: Reliable connectivity across campus.",
   },
 ];
 
-export default function Projects() {
+// Pagination size
+const POSTS_PER_PAGE = 3;
+
+const Projects = () => {
+  const [selectedPost, setSelectedPost] = useState(postsData[0]);
+  const [page, setPage] = useState(1);
+
+  const startIndex = (page - 1) * POSTS_PER_PAGE;
+  const currentPosts = postsData.slice(startIndex, startIndex + POSTS_PER_PAGE);
+  const totalPages = Math.ceil(postsData.length / POSTS_PER_PAGE);
+
   return (
-    <>
-      {/* Full width carousel */}
-      <div className="w-screen overflow-hidden">
-        <Swiper
-          modules={[Autoplay, Pagination, Navigation]}
-          spaceBetween={30}
-          slidesPerView={1}
-          loop={true}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
-          pagination={{ clickable: true }}
-          navigation={{
-            hideOnClick: true,
-            enabled: true,
-          }}
-          breakpoints={{
-            0: { navigation: false },
-            768: { navigation: true },
-          }}
-          style={{ width: "100vw", height: "400px" }}
+    <section className="py-16 px-6 md:px-20">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* LEFT FEATURED POST */}
+        <motion.div
+          key={selectedPost.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="lg:col-span-2 backdrop-blur-md bg-white/5 rounded-xl shadow-lg border border-white/10 p-6"
         >
-          {slides.map((slide, index) => (
-            <SwiperSlide key={index}>
-              <div
-                className="relative w-full h-full flex flex-col justify-center items-center text-center text-white px-4"
-                style={{
-                  backgroundImage: `url(${slide.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  height: "400px",
-                }}
-              >
-                <div className="max-w-6xl mx-auto">
-                  <h2
-                    className="text-4xl sm:text-3xl xs:text-2xl font-bold mb-2 drop-shadow-lg"
-                    style={{ textShadow: "0 2px 6px rgba(0,0,0,0.7)" }}
-                  >
-                    {slide.title}
-                  </h2>
-                  <p
-                    className="text-lg sm:text-base xs:text-sm drop-shadow-md"
-                    style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}
-                  >
-                    {slide.tagline}
-                  </p>
-                </div>
-              </div>
-            </SwiperSlide>
+          <img
+            src={selectedPost.image}
+            alt={selectedPost.title}
+            className="rounded-lg mb-4"
+          />
+          <h2 className="text-2xl font-semibold text-white mb-2">
+            {selectedPost.title}
+          </h2>
+          <p className="text-gray-400 flex items-center gap-2 text-sm mb-4">
+            <FaCalendarAlt /> {selectedPost.date}
+          </p>
+          <p className="text-gray-300 mb-4">{selectedPost.description}</p>
+          <p className="text-gray-400 italic mb-4">{selectedPost.extra}</p>
+          <a
+            href={selectedPost.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+          >
+            View more <FaExternalLinkAlt />
+          </a>
+        </motion.div>
+
+        {/* RIGHT SIDE POSTS LIST */}
+        <div>
+          {currentPosts.map((post) => (
+            <motion.div
+              key={post.id}
+              whileHover={{ scale: 1.02 }}
+              className="mb-4 p-4 rounded-lg bg-white/5 backdrop-blur-md shadow-lg border border-white/10 cursor-pointer"
+              onClick={() => setSelectedPost(post)}
+            >
+              <h3 className="text-lg font-medium text-white">
+                {post.title}
+              </h3>
+              <p className="text-gray-400 flex items-center gap-2 text-sm mt-2">
+                <FaCalendarAlt /> {post.date}
+              </p>
+            </motion.div>
           ))}
-        </Swiper>
+
+          {/* PAGINATION */}
+          <div className="flex justify-between mt-6">
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <button
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={page === totalPages}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Main page content constrained */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
-        {/* Placeholder: Stats Section */}
-        <div id="stats" className="mb-16">
-          {/* TODO: Add animated stats here */}
-        </div>
-
-        {/* Placeholder: Slidable Projects Grid */}
-        <div id="project-grid" className="mb-16">
-          {/* TODO: Add 2 by 1 slidable project grid here */}
-        </div>
-
-        {/* Placeholder: Blog Section */}
-        <div id="blog-section" className="mb-16">
-          {/* TODO: Add blog previews here */}
-        </div>
-      </section>
-    </>
+    </section>
   );
-}
+};
+
+export default Projects;
