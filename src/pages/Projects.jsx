@@ -67,7 +67,7 @@ const Projects = () => {
   const totalPages = Math.ceil(postsData.length / POSTS_PER_PAGE);
 
   return (
-    <section className="py-16 px-6 md:px-20">
+    <section className="py-16 px-6 md:px-20 my-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* LEFT FEATURED POST */}
         <motion.div
