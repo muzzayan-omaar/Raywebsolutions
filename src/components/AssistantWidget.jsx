@@ -76,7 +76,7 @@ function ChatAssistant() {
                         <br />
                         👉{" "}
                         <Link
-                          to="/packages"
+                          to="/register-project"
                           className="text-blue-400 underline hover:text-blue-300"
                         >
                           Get Started Here
@@ -111,9 +111,9 @@ function ChatAssistant() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 bg-blue-600 text-white p-4 rounded-full shadow-lg z-50"
+        className="fixed bottom-6 left-6 bg-blue-600 text-white p-3 sm:p-4 rounded-full shadow-lg z-50"
       >
-        {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
+        {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
       </motion.button>
 
       {/* Chat Window */}
@@ -123,7 +123,7 @@ function ChatAssistant() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-20 left-6 w-80 bg-gray-900 text-white rounded-2xl shadow-xl z-50 flex flex-col"
+            className="fixed bottom-20 left-4 sm:left-6 w-[90%] sm:w-80 bg-gray-900 text-white rounded-2xl shadow-xl z-50 flex flex-col"
           >
             <div className="p-3 border-b border-gray-700 font-semibold">
               💬 RayWeb Assistant

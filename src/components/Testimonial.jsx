@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
@@ -40,8 +40,8 @@ const Testimonial = () => {
   const current = testimonials[index];
 
   return (
-    <div className="bg-[#0e0f11] mt-7 text-white py-20 px-4 md:px-12 lg:px-24">
-      <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
+    <div className="bg-[#0e0f11] py-20 px-4 md:px-12 lg:px-24">
+      <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
         What Our Clients Say
       </h2>
 
@@ -49,23 +49,21 @@ const Testimonial = () => {
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="bg-[#1a1c21] rounded-3xl p-8 shadow-lg flex flex-col items-center space-y-6"
           >
             {/* Client Image */}
-            <div className="flex justify-center">
-              <img
-                src={current.image}
-                alt={current.name}
-                className="w-20 h-20 rounded-full border-2 border-white shadow-md object-cover"
-              />
-            </div>
+            <img
+              src={current.image}
+              alt={current.name}
+              className="w-24 h-24 rounded-full border-2 border-white/20 shadow-md object-cover"
+            />
 
             {/* Quote */}
-            <p className="text-xl leading-relaxed text-gray-300 italic">
+            <p className="text-lg md:text-xl text-gray-300 italic leading-relaxed">
               “{current.quote}”
             </p>
 
@@ -74,7 +72,7 @@ const Testimonial = () => {
               {Array.from({ length: 5 }, (_, i) => (
                 <Star
                   key={i}
-                  size={18}
+                  size={22}
                   className={`${
                     i < current.rating ? "text-yellow-400" : "text-gray-600"
                   }`}
@@ -94,15 +92,15 @@ const Testimonial = () => {
         <div className="mt-10 flex justify-center gap-6">
           <button
             onClick={handlePrev}
-            className="w-10 h-10 rounded-full border border-gray-600 hover:bg-gray-800 transition"
+            className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-600 hover:bg-gray-800 transition"
           >
-            ‹
+            <ChevronLeft size={24} />
           </button>
           <button
             onClick={handleNext}
-            className="w-10 h-10 rounded-full border border-gray-600 hover:bg-gray-800 transition"
+            className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-600 hover:bg-gray-800 transition"
           >
-            ›
+            <ChevronRight size={24} />
           </button>
         </div>
       </div>

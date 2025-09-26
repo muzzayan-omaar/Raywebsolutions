@@ -23,7 +23,7 @@ const Navbar = () => {
     };
 
     emailjs
-      .send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams, "YOUR_PUBLIC_KEY")
+      .send("email-raywebsolutions", "template_qt942y3", templateParams, "bJ9wpm7S0nRz4CjZq")
       .then(() => {
         toast.success("Subscribed successfully!");
         setEmail("");
