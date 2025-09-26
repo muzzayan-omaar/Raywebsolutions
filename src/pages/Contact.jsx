@@ -126,7 +126,7 @@ const Contact = () => {
             center={[24.4539, 54.3773]} // Abu Dhabi
             zoom={2}
             scrollWheelZoom={false}
-            className="h-96 w-full rounded-xl overflow-hidden border border-white/10 shadow-lg"
+            className="h-96 w-full rounded-xl overflow-hidden border border-white/10 shadow-lg z-0"
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

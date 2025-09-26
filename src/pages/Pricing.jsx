@@ -3,18 +3,18 @@ import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-
-
 const packages = [
   {
     title: "Starter",
     price: "AED 799",
+    formerPrice: "AED 990",
     features: ["1 Page Website", "Mobile Friendly", "Basic SEO", "Delivery in 3 days"],
     collapsible: ["1 Contact Form", "1 Revision"],
   },
   {
     title: "Professional",
     price: "AED 1499",
+    formerPrice: "AED 1999",
     features: [
       "Multi-Page Website",
       "Animations + Scroll Effects",
@@ -28,6 +28,7 @@ const packages = [
   {
     title: "eCommerce",
     price: "AED 2499",
+    formerPrice: "AED 2999",
     features: [
       "Online Store (Up to 30 Products)",
       "Cart + Checkout",
@@ -59,11 +60,8 @@ const faqs = [
 ];
 
 const Pricing = () => {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  const toggleCollapse = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const [openCardIndex, setOpenCardIndex] = useState(null); // for card "Show Extras"
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);   // for FAQ toggles
 
   return (
     <section className="py-20 px-4 md:px-10 bg-dark text-white min-h-screen">
@@ -83,62 +81,83 @@ const Pricing = () => {
 
       {/* Packages */}
       <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 flex-wrap">
-        {packages.map((pkg, index) => (
-          <motion.div
-            key={pkg.title}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            viewport={{ once: true }}
-            className={`relative w-full md:w-[300px] ${
-              pkg.popular ? "md:w-[340px] scale-105 z-10" : ""
-            } bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
-          >
-            {pkg.popular && (
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-black px-4 py-1 rounded-full text-xs font-semibold shadow">
-                Most Popular
-              </div>
-            )}
-            <h3 className="text-xl font-semibold mb-2">{pkg.title}</h3>
-            <p className="text-3xl font-bold text-primary mb-4">{pkg.price}</p>
-            <ul className="space-y-2 text-sm">
-              {pkg.features.map((feature, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <CheckCircle size={16} className="text-green-400" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
+        {packages.map((pkg, index) => {
+          const formerPrice = pkg.formerPrice;
+          const savings = formerPrice
+            ? `Save AED ${parseInt(formerPrice.replace(/\D/g, "")) - parseInt(pkg.price.replace(/\D/g, ""))}`
+            : null;
 
-            {/* Collapsible */}
-            <div className="mt-4">
-              <button
-                onClick={() => toggleCollapse(index)}
-                className="flex items-center gap-1 text-primary hover:underline text-sm mt-2"
-              >
-                {openIndex === index ? "Hide Extras" : "Show Extras"}
-                {openIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-              {openIndex === index && (
-                <ul className="mt-2 text-sm space-y-1 text-gray-300">
-                  {pkg.collapsible.map((extra, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <CheckCircle size={14} className="text-blue-400" />
-                      {extra}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <Link
-              to={`/templates/${pkg.title.toLowerCase()}`}
-              className="w-full inline-block mt-6 bg-primary text-black py-2 rounded-full text-center font-semibold hover:bg-sky-400 transition"
+          return (
+            <motion.div
+              key={pkg.title}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className={`relative w-full md:w-[300px] ${pkg.popular ? "md:w-[340px] scale-105 z-10" : ""} bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
             >
-              View Templates
-            </Link>
-          </motion.div>
-        ))}
+              {pkg.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-black px-4 py-1 rounded-full text-xs font-semibold shadow">
+                  Most Popular
+                </div>
+              )}
+
+              <h3 className="text-xl font-semibold mb-2">{pkg.title}</h3>
+
+              {/* Former Price */}
+              {formerPrice && (
+                <div className="text-sm text-gray-400 line-through mb-1">{formerPrice}</div>
+              )}
+
+              {/* Actual Price */}
+              <p className="text-3xl font-bold text-primary mb-2">{pkg.price}</p>
+
+              {/* Savings Badge */}
+              {savings && (
+                <div className="inline-block bg-green-500 text-black px-2 py-1 rounded-full text-xs font-semibold mb-4">
+                  {savings}
+                </div>
+              )}
+
+              <ul className="space-y-2 text-sm">
+                {pkg.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-2">
+                    <CheckCircle size={16} className="text-green-400" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Collapsible Extras */}
+              <div className="mt-4">
+                <button
+                  onClick={() => setOpenCardIndex(openCardIndex === index ? null : index)}
+                  className="flex items-center gap-1 text-primary hover:underline text-sm mt-2"
+                >
+                  {openCardIndex === index ? "Hide Extras" : "Show Extras"}
+                  {openCardIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {openCardIndex === index && (
+                  <ul className="mt-2 text-sm space-y-1 text-gray-300">
+                    {pkg.collapsible.map((extra, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle size={14} className="text-blue-400" />
+                        {extra}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <Link
+                to={`/templates/${pkg.title.toLowerCase()}`}
+                className="w-full inline-block mt-6 bg-primary text-black py-2 rounded-full text-center font-semibold hover:bg-sky-400 transition"
+              >
+                View Templates
+              </Link>
+            </motion.div>
+          );
+        })}
 
         {/* Custom Plan */}
         <motion.div
@@ -206,7 +225,7 @@ const Pricing = () => {
       >
         <h3 className="text-2xl font-bold mb-6 text-center">FAQs</h3>
         {faqs.map((faq, idx) => {
-          const isOpen = openIndex === `faq-${idx}`;
+          const isOpen = openFaqIndex === idx;
           return (
             <motion.div
               key={idx}
@@ -215,7 +234,7 @@ const Pricing = () => {
               transition={{ duration: 0.4, delay: idx * 0.1 }}
               viewport={{ once: true }}
               className="border-b border-white/10 py-4 cursor-pointer"
-              onClick={() => setOpenIndex(isOpen ? null : `faq-${idx}`)}
+              onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
             >
               <div className="flex justify-between items-center">
                 <h4 className="text-white font-medium">{faq.question}</h4>

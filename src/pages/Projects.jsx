@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCalendarAlt, FaExternalLinkAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -59,23 +59,34 @@ const postsData = [
 const POSTS_PER_PAGE = 3;
 
 const Projects = () => {
-  const [selectedPost, setSelectedPost] = useState(postsData[0]);
   const [page, setPage] = useState(1);
+  const [currentPosts, setCurrentPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(postsData[0]);
 
-  const startIndex = (page - 1) * POSTS_PER_PAGE;
-  const currentPosts = postsData.slice(startIndex, startIndex + POSTS_PER_PAGE);
   const totalPages = Math.ceil(postsData.length / POSTS_PER_PAGE);
+
+  // Update current posts when page changes
+  useEffect(() => {
+    const startIndex = (page - 1) * POSTS_PER_PAGE;
+    const newPosts = postsData.slice(startIndex, startIndex + POSTS_PER_PAGE);
+    setCurrentPosts(newPosts);
+    setSelectedPost(newPosts[0]); // Auto-select first post on the page
+  }, [page]);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <section className="py-16 px-6 md:px-20 my-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* LEFT FEATURED POST */}
+        {/* FEATURED POST */}
         <motion.div
           key={selectedPost.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="lg:col-span-2 backdrop-blur-md bg-white/5 rounded-xl shadow-lg border border-white/10 p-6"
+          className="lg:col-span-2 order-1 lg:order-1 backdrop-blur-md bg-white/5 rounded-xl shadow-lg border border-white/10 p-6"
         >
           <img
             src={selectedPost.image}
@@ -100,18 +111,17 @@ const Projects = () => {
           </a>
         </motion.div>
 
-        {/* RIGHT SIDE POSTS LIST */}
-        <div>
+        {/* SIDEBAR POSTS */}
+        <div className="order-2 lg:order-2">
           {currentPosts.map((post) => (
             <motion.div
               key={post.id}
               whileHover={{ scale: 1.02 }}
-              className="mb-4 p-4 rounded-lg bg-white/5 backdrop-blur-md shadow-lg border border-white/10 cursor-pointer"
+              className={`mb-4 p-4 rounded-lg bg-white/5 backdrop-blur-md shadow-lg border border-white/10 cursor-pointer transition
+                ${selectedPost.id === post.id ? "border-blue-500 shadow-blue-500/50" : ""}`}
               onClick={() => setSelectedPost(post)}
             >
-              <h3 className="text-lg font-medium text-white">
-                {post.title}
-              </h3>
+              <h3 className="text-lg font-medium text-white">{post.title}</h3>
               <p className="text-gray-400 flex items-center gap-2 text-sm mt-2">
                 <FaCalendarAlt /> {post.date}
               </p>
@@ -121,14 +131,14 @@ const Projects = () => {
           {/* PAGINATION */}
           <div className="flex justify-between mt-6">
             <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              onClick={() => handlePageChange(Math.max(page - 1, 1))}
               disabled={page === 1}
               className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md disabled:opacity-50"
             >
               Prev
             </button>
             <button
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
               disabled={page === totalPages}
               className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md disabled:opacity-50"
             >
