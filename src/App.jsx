@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
 
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
@@ -10,6 +10,8 @@ import Testimonial from "./components/Testimonial";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
 import WhatsAppFloatingButton from "./components/WhatsAppEmailFloatingButtons";
+import AssistantWidget from "./components/AssistantWidget"; // 👈 new import
+
 import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
 import Projects from "./pages/Projects";
@@ -62,8 +64,8 @@ function App() {
 
         <Footer />
         <WhatsAppFloatingButton />
-
-              <Analytics />
+        <AssistantWidget /> {/* 👈 floating assistant added */}
+        <Analytics />
       </div>
     </Router>
   );
