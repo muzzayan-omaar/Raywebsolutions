@@ -13,11 +13,14 @@ const Pricing = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await axios.get("/api/admin/packages");
-        console.log("Packages fetched:", res.data);
-        setPackages(Array.isArray(res.data) ? res.data : []);
+        const res = await axios.get(
+          "https://rayweb-backend.onrender.com/api/admin/packages"
+        );
+        const data = Array.isArray(res.data) ? res.data : res.data.packages;
+        setPackages(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching packages:", err);
+        setPackages([]);
       }
     };
     fetchPackages();
@@ -27,19 +30,23 @@ const Pricing = () => {
   const faqs = [
     {
       question: "Can I upgrade my package later?",
-      answer: "Yes! You can always upgrade your plan. We'll adjust pricing based on what's already been delivered.",
+      answer:
+        "Yes! You can always upgrade your plan. We'll adjust pricing based on what's already been delivered.",
     },
     {
       question: "What platforms do you build with?",
-      answer: "We use modern stacks like React and Next.js. For eCommerce, we offer Shopify or a custom CMS-based store.",
+      answer:
+        "We use modern stacks like React and Next.js. For eCommerce, we offer Shopify or a custom CMS-based store.",
     },
     {
       question: "How do I request a custom plan?",
-      answer: "Click the 'Request Custom Plan' button above or contact us directly through the contact page.",
+      answer:
+        "Click the 'Request Custom Plan' button above or contact us directly through the contact page.",
     },
     {
       question: "Do I own the website after delivery?",
-      answer: "Absolutely. Once it's delivered, it's 100% yours including the code and content.",
+      answer:
+        "Absolutely. Once it's delivered, it's 100% yours including the code and content.",
     },
   ];
 
@@ -55,24 +62,24 @@ const Pricing = () => {
       >
         <h2 className="text-4xl font-bold mb-4">Pricing Packages</h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          Choose a package that fits your business needs. All packages include responsive design, fast delivery, and premium support.
+          Choose a package that fits your business needs. All packages include responsive design, fast
+          delivery, and premium support.
         </p>
       </motion.div>
 
       {/* Packages */}
       <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 flex-wrap">
         {packages
-          .slice() // copy array
-          .sort((a) => (a.popular ? -1 : 0)) // popular first if needed
+          .filter((pkg) => pkg.name.toLowerCase() !== "custom") // exclude custom plan if it's in backend
+          .slice()
+          .sort((a, b) => (a.popular === b.popular ? 0 : a.popular ? -1 : 1)) // popular first
           .map((pkg, index) => {
-            const mainFeatures = pkg.features.slice(0, 4);
-            const otherFeatures = pkg.features.slice(4);
+            const mainFeatures = pkg.features?.slice(0, 4) || [];
+            const otherFeatures = pkg.features?.slice(4) || [];
 
-            const formerPrice = pkg.formerPrice;
-            const savings =
-              formerPrice && pkg.price
-                ? `Save AED ${parseInt(formerPrice) - parseInt(pkg.price)}`
-                : null;
+            const former = Number(pkg.formerPrice) || 0;
+            const current = Number(pkg.price) || 0;
+            const savings = former > current ? `Save AED ${former - current}` : null;
 
             return (
               <motion.div
@@ -81,7 +88,9 @@ const Pricing = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative w-full md:w-[300px] ${pkg.popular ? "md:w-[340px] scale-105 z-10" : ""} bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
+                className={`relative w-full md:w-[300px] ${
+                  pkg.popular ? "md:w-[340px] scale-105 z-10" : ""
+                } bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
               >
                 {/* Popular Badge */}
                 {pkg.popular && (
@@ -93,12 +102,12 @@ const Pricing = () => {
                 <h3 className="text-xl font-semibold mb-2">{pkg.name}</h3>
 
                 {/* Former Price */}
-                {formerPrice && (
-                  <div className="text-sm text-gray-400 line-through mb-1">{`AED ${formerPrice}`}</div>
+                {former > 0 && (
+                  <div className="text-sm text-gray-400 line-through mb-1">{`AED ${former}`}</div>
                 )}
 
                 {/* Price */}
-                <p className="text-3xl font-bold text-primary mb-2">{`AED ${pkg.price}`}</p>
+                <p className="text-3xl font-bold text-primary mb-2">{`AED ${current}`}</p>
 
                 {/* Savings */}
                 {savings && (
@@ -122,14 +131,20 @@ const Pricing = () => {
                   <div className="mt-4">
                     <button
                       onClick={() =>
-                        setOpenCardIndex(openCardIndex === index ? null : index)
+                        setOpenCardIndex(openCardIndex === pkg._id ? null : pkg._id)
                       }
                       className="flex items-center gap-1 text-primary hover:underline text-sm mt-2"
                     >
-                      {openCardIndex === index ? "Hide Other Features" : "Show Other Features"}
-                      {openCardIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      {openCardIndex === pkg._id
+                        ? "Hide Other Features"
+                        : "Show Other Features"}
+                      {openCardIndex === pkg._id ? (
+                        <ChevronUp size={16} />
+                      ) : (
+                        <ChevronDown size={16} />
+                      )}
                     </button>
-                    {openCardIndex === index && (
+                    {openCardIndex === pkg._id && (
                       <div className="mt-2 text-sm space-y-1 text-gray-300 max-h-36 overflow-y-auto">
                         {otherFeatures.map((feature, i) => (
                           <div key={i} className="flex items-center gap-2">
@@ -152,7 +167,7 @@ const Pricing = () => {
             );
           })}
 
-        {/* Custom Plan stays at the bottom */}
+        {/* Custom Plan always last */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -160,7 +175,9 @@ const Pricing = () => {
           viewport={{ once: true }}
           className="w-full md:w-[300px] bg-gradient-to-br from-[#0f172a] to-[#1e293b] border border-white/10 rounded-2xl p-6 shadow-xl text-center"
         >
-          <h3 className="text-xl font-semibold mb-2 text-white">Need Something Custom?</h3>
+          <h3 className="text-xl font-semibold mb-2 text-white">
+            Need Something Custom?
+          </h3>
           <p className="text-gray-400 text-sm mb-4">
             Not sure which package fits your business? Let's create a custom plan tailored to your needs.
           </p>
