@@ -14,43 +14,18 @@ const Navbar = () => {
 const handleNewsletterSubmit = async (e) => {
   e.preventDefault();
 
-  if (!email.trim()) {
-    return toast.error("Please enter a valid email.");
-  }
+  if (!email.trim()) return toast.error("Please enter a valid email.");
 
   try {
-    // 1️⃣ Save email to your backend (MongoDB)
-    const res = await axios.post(
-      "https://rayweb-backend.onrender.com/api/newsletter",
-      { email }
-    );
-
-    toast.success(res.data.message); // "Subscribed successfully!"
+    const res = await axios.post("https://rayweb-backend.onrender.com/api/newsletter", { email });
+    toast.success(res.data.message);
     setEmail("");
     setShowNewsletter(false);
-
-    // 2️⃣ Optional: Send EmailJS notification (like a welcome email)
-    const templateParams = { user_email: email };
-    emailjs
-      .send(
-        "email-raywebsolutions",      // your EmailJS service ID
-        "template_qt942y3",           // your EmailJS template ID
-        templateParams,
-        "bJ9wpm7S0nRz4CjZq"           // your EmailJS public key
-      )
-      .then(() => {
-        console.log("EmailJS notification sent");
-      })
-      .catch((err) => {
-        console.error("EmailJS failed", err);
-      });
-
   } catch (err) {
-    toast.error(
-      err.response?.data?.message || "Subscription failed. Try again."
-    );
+    toast.error(err.response?.data?.message || "Subscription failed. Try again.");
   }
 };
+
 
 
   return (
