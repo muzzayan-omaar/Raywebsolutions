@@ -11,28 +11,47 @@ const Navbar = () => {
   const [email, setEmail] = useState("");
   const formRef = useRef();
 
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
+const handleNewsletterSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!email.trim()) {
-      return toast.error("Please enter a valid email.");
-    }
+  if (!email.trim()) {
+    return toast.error("Please enter a valid email.");
+  }
 
-    const templateParams = {
-      user_email: email,
-    };
+  try {
+    // 1️⃣ Save email to your backend (MongoDB)
+    const res = await axios.post(
+      "https://rayweb-backend.onrender.com/api/newsletter",
+      { email }
+    );
 
+    toast.success(res.data.message); // "Subscribed successfully!"
+    setEmail("");
+    setShowNewsletter(false);
+
+    // 2️⃣ Optional: Send EmailJS notification (like a welcome email)
+    const templateParams = { user_email: email };
     emailjs
-      .send("email-raywebsolutions", "template_qt942y3", templateParams, "bJ9wpm7S0nRz4CjZq")
+      .send(
+        "email-raywebsolutions",      // your EmailJS service ID
+        "template_qt942y3",           // your EmailJS template ID
+        templateParams,
+        "bJ9wpm7S0nRz4CjZq"           // your EmailJS public key
+      )
       .then(() => {
-        toast.success("Subscribed successfully!");
-        setEmail("");
-        setShowNewsletter(false);
+        console.log("EmailJS notification sent");
       })
-      .catch(() => {
-        toast.error("Subscription failed. Try again.");
+      .catch((err) => {
+        console.error("EmailJS failed", err);
       });
-  };
+
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message || "Subscription failed. Try again."
+    );
+  }
+};
+
 
   return (
     <header className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] md:w-[90%] max-w-6xl z-50">
