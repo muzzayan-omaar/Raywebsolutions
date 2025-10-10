@@ -14,6 +14,14 @@ const Projects = () => {
 
   const API_URL = "https://rayweb-backend.onrender.com/api/admin/posts";
 
+  // Format date for display
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
   // Fetch posts from backend
   const fetchPosts = async () => {
     try {
@@ -38,14 +46,6 @@ const Projects = () => {
   }, [page, allPosts]);
 
   const handlePageChange = (newPage) => setPage(newPage);
-
-  // Format date for display
-  const formatDate = (dateStr) =>
-    new Date(dateStr).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
 
   if (!selectedPost) return <p className="text-white p-6">Loading...</p>;
 
@@ -110,11 +110,7 @@ const Projects = () => {
               Prev
             </button>
             <button
-              onClick={() =>
-                handlePageChange(
-                  Math.min(page + 1, Math.ceil(allPosts.length / POSTS_PER_PAGE))
-                )
-              }
+              onClick={() => handlePageChange(Math.min(page + 1, Math.ceil(allPosts.length / POSTS_PER_PAGE)))}
               disabled={page === Math.ceil(allPosts.length / POSTS_PER_PAGE)}
               className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md disabled:opacity-50"
             >

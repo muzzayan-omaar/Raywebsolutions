@@ -1,67 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-const packages = [
-  {
-    title: "Starter",
-    price: "AED 799",
-    formerPrice: "AED 990",
-    features: ["1 Page Website", "Mobile Friendly", "Basic SEO", "Delivery in 3 days"],
-    collapsible: ["1 Contact Form", "1 Revision"],
-  },
-  {
-    title: "Professional",
-    price: "AED 1499",
-    formerPrice: "AED 1999",
-    features: [
-      "Multi-Page Website",
-      "Animations + Scroll Effects",
-      "Advanced SEO Setup",
-      "WhatsApp Integration",
-      "Delivery in 5 days",
-    ],
-    collapsible: ["2 Revisions", "Free Support for 14 Days"],
-    popular: true,
-  },
-  {
-    title: "eCommerce",
-    price: "AED 2499",
-    formerPrice: "AED 2999",
-    features: [
-      "Online Store (Up to 30 Products)",
-      "Cart + Checkout",
-      "Payment Gateway",
-      "Shopify or Custom",
-      "Inventory System",
-    ],
-    collapsible: ["Training Video", "Free Support for 30 Days"],
-  },
-];
-
-const faqs = [
-  {
-    question: "Can I upgrade my package later?",
-    answer: "Yes! You can always upgrade your plan. We'll adjust pricing based on what's already been delivered.",
-  },
-  {
-    question: "What platforms do you build with?",
-    answer: "We use modern stacks like React and Next.js. For eCommerce, we offer Shopify or a custom CMS-based store.",
-  },
-  {
-    question: "How do I request a custom plan?",
-    answer: "Click the 'Request Custom Plan' button above or contact us directly through the contact page.",
-  },
-  {
-    question: "Do I own the website after delivery?",
-    answer: "Absolutely. Once it's delivered, it's 100% yours including the code and content.",
-  },
-];
+import axios from "axios";
 
 const Pricing = () => {
-  const [openCardIndex, setOpenCardIndex] = useState(null); // for card "Show Extras"
-  const [openFaqIndex, setOpenFaqIndex] = useState(null);   // for FAQ toggles
+  const [packages, setPackages] = useState([]);
+  const [openCardIndex, setOpenCardIndex] = useState(null);
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
+
+  // Fetch packages from backend
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const res = await axios.get("/api/admin/packages");
+        console.log("Packages fetched:", res.data);
+        setPackages(Array.isArray(res.data) ? res.data : []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchPackages();
+  }, []);
+
+  // Hardcoded FAQs
+  const faqs = [
+    {
+      question: "Can I upgrade my package later?",
+      answer: "Yes! You can always upgrade your plan. We'll adjust pricing based on what's already been delivered.",
+    },
+    {
+      question: "What platforms do you build with?",
+      answer: "We use modern stacks like React and Next.js. For eCommerce, we offer Shopify or a custom CMS-based store.",
+    },
+    {
+      question: "How do I request a custom plan?",
+      answer: "Click the 'Request Custom Plan' button above or contact us directly through the contact page.",
+    },
+    {
+      question: "Do I own the website after delivery?",
+      answer: "Absolutely. Once it's delivered, it's 100% yours including the code and content.",
+    },
+  ];
 
   return (
     <section className="py-20 px-4 md:px-10 bg-dark text-white min-h-screen">
@@ -81,85 +61,98 @@ const Pricing = () => {
 
       {/* Packages */}
       <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 flex-wrap">
-        {packages.map((pkg, index) => {
-          const formerPrice = pkg.formerPrice;
-          const savings = formerPrice
-            ? `Save AED ${parseInt(formerPrice.replace(/\D/g, "")) - parseInt(pkg.price.replace(/\D/g, ""))}`
-            : null;
+        {packages
+          .slice() // copy array
+          .sort((a) => (a.popular ? -1 : 0)) // popular first if needed
+          .map((pkg, index) => {
+            const mainFeatures = pkg.features.slice(0, 4);
+            const otherFeatures = pkg.features.slice(4);
 
-          return (
-            <motion.div
-              key={pkg.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className={`relative w-full md:w-[300px] ${pkg.popular ? "md:w-[340px] scale-105 z-10" : ""} bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
-            >
-              {pkg.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-black px-4 py-1 rounded-full text-xs font-semibold shadow">
-                  Most Popular
-                </div>
-              )}
+            const formerPrice = pkg.formerPrice;
+            const savings =
+              formerPrice && pkg.price
+                ? `Save AED ${parseInt(formerPrice) - parseInt(pkg.price)}`
+                : null;
 
-              <h3 className="text-xl font-semibold mb-2">{pkg.title}</h3>
-
-              {/* Former Price */}
-              {formerPrice && (
-                <div className="text-sm text-gray-400 line-through mb-1">{formerPrice}</div>
-              )}
-
-              {/* Actual Price */}
-              <p className="text-3xl font-bold text-primary mb-2">{pkg.price}</p>
-
-              {/* Savings Badge */}
-              {savings && (
-                <div className="inline-block bg-green-500 text-black px-2 py-1 rounded-full text-xs font-semibold mb-4">
-                  {savings}
-                </div>
-              )}
-
-              <ul className="space-y-2 text-sm">
-                {pkg.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <CheckCircle size={16} className="text-green-400" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Collapsible Extras */}
-              <div className="mt-4">
-                <button
-                  onClick={() => setOpenCardIndex(openCardIndex === index ? null : index)}
-                  className="flex items-center gap-1 text-primary hover:underline text-sm mt-2"
-                >
-                  {openCardIndex === index ? "Hide Extras" : "Show Extras"}
-                  {openCardIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
-                {openCardIndex === index && (
-                  <ul className="mt-2 text-sm space-y-1 text-gray-300">
-                    {pkg.collapsible.map((extra, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <CheckCircle size={14} className="text-blue-400" />
-                        {extra}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <Link
-                to={`/templates/${pkg.title.toLowerCase()}`}
-                className="w-full inline-block mt-6 bg-primary text-black py-2 rounded-full text-center font-semibold hover:bg-sky-400 transition"
+            return (
+              <motion.div
+                key={pkg._id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className={`relative w-full md:w-[300px] ${pkg.popular ? "md:w-[340px] scale-105 z-10" : ""} bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:scale-105`}
               >
-                View Templates
-              </Link>
-            </motion.div>
-          );
-        })}
+                {/* Popular Badge */}
+                {pkg.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-black px-4 py-1 rounded-full text-xs font-semibold shadow">
+                    Most Popular
+                  </div>
+                )}
 
-        {/* Custom Plan */}
+                <h3 className="text-xl font-semibold mb-2">{pkg.name}</h3>
+
+                {/* Former Price */}
+                {formerPrice && (
+                  <div className="text-sm text-gray-400 line-through mb-1">{`AED ${formerPrice}`}</div>
+                )}
+
+                {/* Price */}
+                <p className="text-3xl font-bold text-primary mb-2">{`AED ${pkg.price}`}</p>
+
+                {/* Savings */}
+                {savings && (
+                  <div className="inline-block bg-green-500 text-black px-2 py-1 rounded-full text-xs font-semibold mb-4">
+                    {savings}
+                  </div>
+                )}
+
+                {/* Main Features */}
+                <div className="max-h-40 overflow-y-auto space-y-2 text-sm">
+                  {mainFeatures.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle size={16} className="text-green-400" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Collapsible Other Features */}
+                {otherFeatures.length > 0 && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() =>
+                        setOpenCardIndex(openCardIndex === index ? null : index)
+                      }
+                      className="flex items-center gap-1 text-primary hover:underline text-sm mt-2"
+                    >
+                      {openCardIndex === index ? "Hide Other Features" : "Show Other Features"}
+                      {openCardIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </button>
+                    {openCardIndex === index && (
+                      <div className="mt-2 text-sm space-y-1 text-gray-300 max-h-36 overflow-y-auto">
+                        {otherFeatures.map((feature, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <CheckCircle size={14} className="text-blue-400" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <Link
+                  to={`/templates/${pkg.name.toLowerCase()}`}
+                  className="w-full inline-block mt-6 bg-primary text-black py-2 rounded-full text-center font-semibold hover:bg-sky-400 transition"
+                >
+                  View Templates
+                </Link>
+              </motion.div>
+            );
+          })}
+
+        {/* Custom Plan stays at the bottom */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -176,44 +169,6 @@ const Pricing = () => {
           </button>
         </motion.div>
       </div>
-
-      {/* Comparison Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto mt-20 overflow-x-auto"
-      >
-        <h3 className="text-2xl font-bold mb-6 text-center">Compare Packages</h3>
-        <table className="w-full text-sm text-left text-gray-300 border border-white/10">
-          <thead className="bg-white/5 text-white">
-            <tr>
-              <th className="px-4 py-2">Feature</th>
-              <th className="px-4 py-2 text-center">Starter</th>
-              <th className="px-4 py-2 text-center">Professional</th>
-              <th className="px-4 py-2 text-center">eCommerce</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/10">
-            {[
-              ["Pages", "1", "5+", "10+"],
-              ["Animations", "✖️", "✅", "✅"],
-              ["Mobile Responsive", "✅", "✅", "✅"],
-              ["Online Store", "✖️", "✖️", "✅"],
-              ["Payment Integration", "✖️", "✖️", "✅"],
-              ["Delivery", "3 Days", "5 Days", "7 Days"],
-            ].map(([feature, s, p, e], idx) => (
-              <tr key={idx}>
-                <td className="px-4 py-3">{feature}</td>
-                <td className="text-center">{s}</td>
-                <td className="text-center">{p}</td>
-                <td className="text-center">{e}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.div>
 
       {/* FAQs */}
       <motion.div
