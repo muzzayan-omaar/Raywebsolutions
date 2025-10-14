@@ -1,9 +1,10 @@
+import axios from "axios";
+
 import { Menu } from "lucide-react";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import emailjs from "@emailjs/browser";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,13 +19,21 @@ const handleNewsletterSubmit = async (e) => {
 
   try {
     const res = await axios.post("https://rayweb-backend.onrender.com/api/newsletter", { email });
-    toast.success(res.data.message);
-    setEmail("");
-    setShowNewsletter(false);
+    
+    // ✅ show toast first
+    toast.success(res.data.message || "Subscribed successfully!");
+
+    // then close + reset
+    setTimeout(() => {
+      setEmail("");
+      setShowNewsletter(false);
+    }, 500);
+
   } catch (err) {
     toast.error(err.response?.data?.message || "Subscription failed. Try again.");
   }
 };
+
 
 
 
